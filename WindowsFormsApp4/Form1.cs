@@ -14,6 +14,7 @@ namespace WindowsFormsApp4
     public partial class Form1 : Form
     {
         private Timer timer;
+        private int countAttempts;
         private connection con = new connection();
         private string UserId, UserLogin, UserPassword, UserRole, UserName, UserSurname, UserPatronymic;
         
@@ -21,6 +22,7 @@ namespace WindowsFormsApp4
         {
             InitializeComponent();
             ApplyColorScheme();
+            countAttempts = 0;
         }
         private void ApplyColorScheme()
         {
@@ -32,7 +34,7 @@ namespace WindowsFormsApp4
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             string Login = userLogin.Text.Trim();
             string Password = userPassword.Text.Trim();
@@ -41,6 +43,15 @@ namespace WindowsFormsApp4
             {
                 if (Login != "" && Password != "")
                 {
+                    if (countAttempts >= 1)
+                    {
+                        ShowCaptcha();
+                        button1.Enabled = false;
+                        await Task.Delay(10 * 1000);
+                        button1.Enabled = true;
+                        countAttempts = 0;
+                    }
+                    
                     con.Open();
 
                     string query = "SELECT UserId, UserLogin, UserPassword,UserRole, UserName , UserSurname, UserPatronymic FROM user WHERE UserLogin ='" + Login + "' AND UserPassword ='" + Password + "'";
@@ -64,9 +75,6 @@ namespace WindowsFormsApp4
                         else
                         {
                             Console.WriteLine("Пользователь не найден. Пожалуйста, проверьте логин и пароль.");
-
-                            
-                            ShowCaptcha();
                         }
                     }
                 }
@@ -83,6 +91,8 @@ namespace WindowsFormsApp4
             {
                 con.Close();
             }
+
+            countAttempts++;
         }
 
         private void ShowCaptcha()
