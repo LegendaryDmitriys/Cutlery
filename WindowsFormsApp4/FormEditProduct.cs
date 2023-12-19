@@ -26,7 +26,8 @@ namespace WindowsFormsApp4
             
             ApplyColorScheme();
 
-
+            // Если роль пользователя - user, делаем поля только для чтения
+            
             if (DataBank.Text2 == "1")
             {
                 nameTextBox.ReadOnly = true;
@@ -41,6 +42,8 @@ namespace WindowsFormsApp4
             
         }
         
+        
+        // Применение цветовой схемы
         private void ApplyColorScheme()
         {
             this.BackColor = Color.White;
@@ -52,7 +55,7 @@ namespace WindowsFormsApp4
         }
         
         
-        
+        // Загрузка данных о продукте
         private void LoadProductData()
         {
             
@@ -81,6 +84,8 @@ namespace WindowsFormsApp4
             con.Close();
         }
         
+        
+        // Загрузка категорий товаров
         private void LoadCategories()
         {
             con.Open();
@@ -99,6 +104,8 @@ namespace WindowsFormsApp4
             con.Close();
         }
         
+        
+        // Загрузка изображения по имени файла
         private Image LoadImageFromFileName(string fileName)
         {
             string imagePath = Path.Combine(Application.StartupPath, "Images", fileName);
@@ -115,6 +122,8 @@ namespace WindowsFormsApp4
         }
 
 
+        
+        // Обработчик двойного клика по изображению для выбора файла
         private void imgPictureBox_DoubleClick(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -129,6 +138,8 @@ namespace WindowsFormsApp4
             }
         }
         
+        
+        // Сохранение изображения в базу данных
         private void SaveImageToDatabase()
         {
             if (imgPictureBox.Image != null)
@@ -149,7 +160,7 @@ namespace WindowsFormsApp4
             }
         }
 
-
+        // Обработчик нажатия на кнопку "Сохранить"
         private void saveButton_Click(object sender, EventArgs e)
         {
             con.Open();

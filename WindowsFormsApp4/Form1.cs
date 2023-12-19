@@ -24,6 +24,8 @@ namespace WindowsFormsApp4
             ApplyColorScheme();
             countAttempts = 0;
         }
+        
+        // Применение цветовой схемы
         private void ApplyColorScheme()
         {
             this.BackColor = Color.White;
@@ -33,7 +35,7 @@ namespace WindowsFormsApp4
             button2.ForeColor = Color.White;
         }
 
-
+        // Обработчик нажатия на кнопку "Войти"
         private async void button1_Click(object sender, EventArgs e)
         {
             string Login = userLogin.Text.Trim();
@@ -43,19 +45,15 @@ namespace WindowsFormsApp4
             {
                 if (Login != "" && Password != "")
                 {
-                    if (countAttempts >= 1)
-                    {
-                        ShowCaptcha();
-                        button1.Enabled = false;
-                        await Task.Delay(10 * 1000);
-                        button1.Enabled = true;
-                        countAttempts = 0;
-                    }
                     
                     con.Open();
 
+                    
+                    // SQL-запрос
                     string query = "SELECT UserId, UserLogin, UserPassword,UserRole, UserName , UserSurname, UserPatronymic FROM user WHERE UserLogin ='" + Login + "' AND UserPassword ='" + Password + "'";
 
+                    
+                    // Выполнение запроса и обработка результатов
                     using (MySqlDataReader reader = con.ExecuteQuery(query))
                     {
                         if (reader != null && reader.Read())
@@ -68,19 +66,30 @@ namespace WindowsFormsApp4
                             UserSurname = reader["UserSurname"].ToString();
                             UserPatronymic = reader["UserPatronymic"].ToString();
                             
+                            // Отображение формы
                             ShowFormUsers(UserSurname + " " + UserName + " " + UserPatronymic, UserRole); 
                             Console.WriteLine("Вход выполнен. UserId: " + UserId + ", UserLogin: " + UserLogin + ", UserPassword: " + UserPassword + ", UserRole : " + UserRole);
                             
                         }
                         else
                         {
-                            Console.WriteLine("Пользователь не найден. Пожалуйста, проверьте логин и пароль.");
+                            // Показ капчи и блокировка кнопки "Войти"
+                            MessageBox.Show("Пользователь не найден. Пожалуйста, проверьте логин и пароль.", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                            countAttempts++;
+                            if (countAttempts >= 2)
+                            {
+                                ShowCaptcha();
+                                button1.Enabled = false;
+                                await Task.Delay(10 * 1000);
+                                button1.Enabled = true;
+                                countAttempts = 0;
+                            }
                         }
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Логин и пароль не могут быть пустыми.");
+                    MessageBox.Show("Логин и пароль не могут быть пустыми.", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
             catch (Exception ex)
@@ -91,10 +100,11 @@ namespace WindowsFormsApp4
             {
                 con.Close();
             }
-
-            countAttempts++;
+            
         }
 
+        
+        // Показ формы капчи
         private void ShowCaptcha()
         {
             Captcha captcha = new Captcha();
@@ -102,6 +112,8 @@ namespace WindowsFormsApp4
             
         }
 
+        
+        // Показ основной формы 
         private void ShowFormUsers(string userFullName,string UserRole)
         {
             DataBank.Text = userFullName;
@@ -111,6 +123,7 @@ namespace WindowsFormsApp4
         }
         
 
+        // Обработчик нажатия на кнопку "Войти как гость"
         private void button2_Click(object sender, EventArgs e)
         {
             ShowFormUsers("", UserRole);

@@ -20,6 +20,8 @@ namespace WindowsFormsApp4
             imgPictureBox.Height = 200;
         }
         
+        
+        // Применение цветовой схемы
         private void ApplyColorScheme()
         {
             this.BackColor = Color.White;
@@ -31,6 +33,8 @@ namespace WindowsFormsApp4
 
         }
 
+        
+        // Загрузка категорий товаров
         private void LoadCategories()
         {
             con.Open();
@@ -49,6 +53,8 @@ namespace WindowsFormsApp4
             con.Close();
         }
 
+        
+        // Обработчик двойного клика по изображению для выбора файла
         private void imgPictureBox_DoubleClick(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -61,6 +67,8 @@ namespace WindowsFormsApp4
                 imgPictureBox.Image = selectedImage;
             }
         }
+        
+        // Сохранение изображения и данных о товаре в базу данных
         private void SaveImageAndProductToDatabase()
         {
             if (imgPictureBox.Image != null)
@@ -100,6 +108,8 @@ namespace WindowsFormsApp4
             }
         }
 
+        
+        // Обработчик нажатия на кнопку "Сохранить"
         private void saveButton_Click(object sender, EventArgs e)
         {
             SaveImageAndProductToDatabase();

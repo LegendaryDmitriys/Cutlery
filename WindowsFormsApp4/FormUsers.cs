@@ -18,6 +18,8 @@ namespace WindowsFormsApp4
             ApplyColorScheme();
         }
         
+        
+        // Применение цветовой схемы
         private void ApplyColorScheme()
         {
             this.BackColor = Color.White;
@@ -29,10 +31,13 @@ namespace WindowsFormsApp4
             addProductButton.BackColor = Color.FromArgb(73, 140, 81); 
             addProductButton.ForeColor = Color.White;
         }
+        
+        // Загрузка формы
         private void FormUsers_Load(object sender, EventArgs e)
         {
             label1.Text = DataBank.Text;
 
+            // Ограничение действий для незарегистрированных пользователей
             if (DataBank.Text == "")
             {
                 deleteProductButton.Enabled = false;
@@ -49,15 +54,17 @@ namespace WindowsFormsApp4
                 filterManufactorComboBox.Enabled = false;
                 filterManufactorComboBox.Visible = false;
             }
-
+            
+            // Ограничение действий для пользователей
             if (DataBank.Text2 == "1")
             {
                 deleteProductButton.Enabled = false;
                 deleteProductButton.Visible = false;
                 addProductButton.Enabled = false;
                 addProductButton.Visible = false;
-                
             }
+            
+            // Ограничение действий для менеджеров
             else if (DataBank.Text2 == "2")
             {
                 deleteProductButton.Enabled = false;
@@ -74,6 +81,9 @@ namespace WindowsFormsApp4
             dataGridView1.Refresh();
         }
 
+        
+        
+        // Обработка кнопку "Удалить"
         private void button1_Click(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
@@ -87,6 +97,9 @@ namespace WindowsFormsApp4
             }
         }
         
+        
+        
+        // Загрузка из базы-данных в GridView
         private void LoadDataIntoDataGridView()
         {
             dataGridView1.Columns.Clear();
@@ -120,6 +133,9 @@ namespace WindowsFormsApp4
             int totalRecords = GetTotalRecordsCount();
             UpadateDataInfoLabel(dataGridView1.Rows.Count, totalRecords);
         }
+        
+        
+        // Загрузка изображения по имени файла
         private Image LoadImageFromFileName(string fileName)
         {
             string imagePath = Path.Combine(Application.StartupPath, "Images", fileName);
@@ -135,6 +151,8 @@ namespace WindowsFormsApp4
             }
         }
 
+        
+        // Поиск по атрибутам в GridView
         private void SearchTextBox_TextChanged(object sender, EventArgs e)
         {
             dataGridView1.ClearSelection();
@@ -166,12 +184,14 @@ namespace WindowsFormsApp4
             UpadateDataInfoLabel(dataGridView1.Rows.Count, totalRecords);
         }
 
+        
+        
         private void filterManufactorComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterDataByManufacturer();
         }
         
-        
+        // Фильтрация по производителя GridView
         private void LoadDataFromQuery(string query)
         {
             con.Open();
@@ -193,6 +213,8 @@ namespace WindowsFormsApp4
                 dataGridView1.Rows.Add(image, row["ProductName"], row["ProductDescription"], row["ProductManufacturer"], row["ProductCost"], row["ProductQuantityInStock"]);
             }
         }
+        
+        // Метод фильтрации
         private void FilterDataByManufacturer()
         {
             string selectedManufacturer = filterManufactorComboBox.SelectedItem?.ToString();
@@ -212,6 +234,9 @@ namespace WindowsFormsApp4
 
             UpadateDataInfoLabel(dataGridView1.Rows.Count, totalRecords);
         }
+        
+        
+        // Заполнение списка производителей
         private void FillComboBox()
         {
             con.Open();
@@ -233,11 +258,16 @@ namespace WindowsFormsApp4
             }
             
         }
+        
+        
+        // Обновление счетчика записей
         private void UpadateDataInfoLabel( int displayedCount, int totalRecords)
         {
             dataInfoLable.Text = $"{displayedCount-1} из {totalRecords}";  
         }
         
+        
+        // Получение общего количества записей
         private int GetTotalRecordsCount()
         {
             con.Open();
@@ -252,6 +282,8 @@ namespace WindowsFormsApp4
             return totalRecords;
         }
 
+        
+        // Метод удаления продукта
         private void DeleteProduct(string ProductArticleNumber )
         {
            
@@ -272,6 +304,9 @@ namespace WindowsFormsApp4
             }
         }
 
+        
+        
+        // Удаление с условием - 1
         private void DeleteAdditionalProducts(string productArticleNumber)
         {
             con.Open();
@@ -282,6 +317,7 @@ namespace WindowsFormsApp4
             con.Close();
         }
 
+        // Удаление с условием - 2
         private bool IsProductInOrder(string ProductArticleNumber)
         {
             con.Open();
@@ -293,12 +329,16 @@ namespace WindowsFormsApp4
                 return count > 0;
             }
         }
+        
+        
+        // Показ формы добавления товара
         private void OpenAddProductForm()
         {
             FormAddProduct addProductForm = new FormAddProduct();
             addProductForm.ShowDialog();
             LoadDataIntoDataGridView();
         }
+        // Показ формы редактирования товара
         private void OpenEditProductForm(string ProductArticleNumber)
         {
             FormEditProduct editProductForm = new FormEditProduct(ProductArticleNumber);
@@ -306,11 +346,16 @@ namespace WindowsFormsApp4
             LoadDataIntoDataGridView(); 
         }
 
+        
+        // Кнопка добавления товара
         private void addProductButton_Click(object sender, EventArgs e)
         {
             OpenAddProductForm();
         }
 
+        
+        
+        // Метод для открытия формы редактировая
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -326,6 +371,7 @@ namespace WindowsFormsApp4
             throw new System.NotImplementedException();
         }
 
+        // Запрет на удаление из DataGrid 
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
